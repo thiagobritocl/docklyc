@@ -30,7 +30,7 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/";
+      window.location.href = "/admin";
     } catch (err) {
       setError("Error de conexión. Intente nuevamente.");
     } finally {
