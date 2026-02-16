@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Anchor, CheckCircle2, XCircle, Heart, BookOpen, Shield, Users } from "lucide-react";
 import PageHero from "@/components/PageHero";
 
-const HERO_IMG = "https://private-us-east-1.manuscdn.com/sessionFile/Hj4w00wth7LE6lIusnbtO6/sandbox/leyGp7q7co6RgJeaK6NN2S-img-5_1771270024000_na1fn_aGVyby1hYm91dA.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSGo0dzAwd3RoN0xFNmxJdXNuYnRPNi9zYW5kYm94L2xleUdwN3E3Y282UmdKZWFLNk5OMlMtaW1nLTVfMTc3MTI3MDAyNDAwMF9uYTFmbl9hR1Z5YnkxaFltOTFkQS5qcGc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=CzQpQwK5QTj8Y6jehZy6-Sm8VrJl-E2YWHy-Y32yKi4-BVO85R9hsn-CEf6S3Y0ftPgx5Tsx1Hkr0j8fMl4f9h2DnVhZmuUSeKgL~fv3WTMmf-4Z4~vc3w42NlnmuRtEYUwve6eQibY8hGHgUqIW0OUJILqvoo3iDScMWZyO0ISQpWcg4m9xOaS0rCOicv1o0cPb6dvwD-KnKp6OjiYY2~B5ROL7lnWvkaoKb93AQ1peR3Btzagd42E7EYOOn7m-wMs2WPNRGpOqPsv4itohHoFjsqocXTu84BeamEw~4ekG0GYB8i3VqPJgnHMMy7HsW9B0bOa~70iUnpQhVFxkBg__";
+const HERO_IMG = "https://images.unsplash.com/photo-1599640842225-85d111c60e6b?w=1920&q=80";
 
 const queEs = [
   { icon: BookOpen, title: "Portal informativo independiente", desc: "Dockly es un sitio web dedicado a reunir, organizar y presentar informacion clara y realista sobre la industria de cruceros para personas de Latinoamerica interesadas en trabajar a bordo." },

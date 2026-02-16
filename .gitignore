@@ -112,3 +112,16 @@ temp/
 screenshots/
 terminal_full_output/
 page_texts/
+.local/
+deploy_error.txt
+deploy_status.txt
+railway_info.txt
+railway_vars_info.txt
+.railwayrc.json
+.browser_data_dir/
+.history/
+.browser_data_dir/
+.config/
+.lesshst
+.env
+.env.railway

@@ -8,7 +8,7 @@ import {
 import PageHero from "@/components/PageHero";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
 
-const HERO_IMG = "https://private-us-east-1.manuscdn.com/sessionFile/Hj4w00wth7LE6lIusnbtO6/sandbox/leyGp7q7co6RgJeaK6NN2S-img-2_1771270030000_na1fn_aGVyby1hcmVhcw.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSGo0dzAwd3RoN0xFNmxJdXNuYnRPNi9zYW5kYm94L2xleUdwN3E3Y282UmdKZWFLNk5OMlMtaW1nLTJfMTc3MTI3MDAzMDAwMF9uYTFmbl9hR1Z5YnkxaGNtVmhjdy5qcGc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=XNVwHlGfEPlK4v05VBbz~iGMD6Wt05g3SmTOH~BKtvsj6m2yTZF-SDXVtpevbF1IYYtL~4T2RHXBu03WViFdnDcgMAlkTLMZee5SqiJ1dLz9VDWuurmyorpCtQlYpDGIKzTZgEhduwIOqauM2Mzm8nDHAbcyYFQYJ10KC50VnjQ4JjTSSDKm53~4wLYnc2gaXXf0sGWO8hBOBzy8-e8RXDcTJOfENtZXhZtQaRSAfreVIPCvc1mRAxIK5-Of7DlGuW2TWqcX0Tew65u5aX2fjYZpx9r7s~R-xbH6KVO4ph~Wy3BaEOo55BgTgHUoXwV73FAPZ9Uls-jLfHe23Wo80w__";
+const HERO_IMG = "https://images.unsplash.com/photo-1580541631950-7282082b53ce?w=1920&q=80";
 
 type EntryLevel = "entry-level" | "experiencia" | "especializado";
 

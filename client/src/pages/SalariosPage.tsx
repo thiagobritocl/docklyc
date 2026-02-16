@@ -3,7 +3,7 @@ import { DollarSign, Info, TrendingUp } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
 
-const HERO_IMG = "https://private-us-east-1.manuscdn.com/sessionFile/Hj4w00wth7LE6lIusnbtO6/sandbox/leyGp7q7co6RgJeaK6NN2S-img-4_1771270036000_na1fn_aGVyby1zYWxhcmlvcw.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSGo0dzAwd3RoN0xFNmxJdXNuYnRPNi9zYW5kYm94L2xleUdwN3E3Y282UmdKZWFLNk5OMlMtaW1nLTRfMTc3MTI3MDAzNjAwMF9uYTFmbl9hR1Z5YnkxellXeGhjbWx2Y3cuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=DMTHh0SwNqCHwJ91qeq~1fgb3sZioTTOYWqvcXdu3~ZTvYDgBEOw1cYuBMsf9Gc6UDfbV7Dsr6EjOiLd2DpHtlrXHNehs~lrALPf9nKXd0wk~TZ~VQrXJKDBItBxiNuSf51ky~lCooD-X~5ig7RWW3-VSLX-PyPayMEzmDjli10OTdHQaZvU96c-WLY6IuQeTJ1HtMmO4mky-DcH7c-neK3Mg1oB16MERDaMo0O5e23rWShXam1ZnS85EpsH2TuALY9DxJ1i1g2hbrpM8c9To6H-TQYj223Q6kgcNFiXOXVGGxdRXZ4cxomffkPbsXJVAi025P2Q30GD7OimH-vSsw__";
+const HERO_IMG = "https://images.unsplash.com/photo-1559599746-8823b38544c6?w=1920&q=80";
 
 interface SalaryRow {
   cargo: string;

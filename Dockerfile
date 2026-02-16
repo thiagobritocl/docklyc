@@ -10,7 +10,7 @@ RUN npm install -g pnpm@10.4.1
 COPY package.json pnpm-lock.yaml ./
 COPY patches ./patches/
 
-# Install dependencies
+# Install all dependencies (including dev for build)
 RUN pnpm install --frozen-lockfile
 
 # Copy source code
@@ -31,12 +31,11 @@ RUN npm install -g pnpm@10.4.1
 COPY package.json pnpm-lock.yaml ./
 COPY patches ./patches/
 
-# Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
+# Install ALL dependencies (vite is needed at runtime due to esbuild external packages)
+RUN pnpm install --frozen-lockfile
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/dist/public ./public
 
 # Expose port
 EXPOSE 3000

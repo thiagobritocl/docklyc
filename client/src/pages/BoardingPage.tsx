@@ -3,7 +3,7 @@ import { FileText, Users, PenLine, Folder, GraduationCap, Plane, Mail, MapPin, S
 import PageHero from "@/components/PageHero";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
 
-const HERO_IMG = "https://private-us-east-1.manuscdn.com/sessionFile/Hj4w00wth7LE6lIusnbtO6/sandbox/leyGp7q7co6RgJeaK6NN2S-img-3_1771270021000_na1fn_aGVyby1ib2FyZGluZw.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSGo0dzAwd3RoN0xFNmxJdXNuYnRPNi9zYW5kYm94L2xleUdwN3E3Y282UmdKZWFLNk5OMlMtaW1nLTNfMTc3MTI3MDAyMTAwMF9uYTFmbl9hR1Z5YnkxaWIyRnlaR2x1WncuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=F~stmG6sO8HRTwMDYYThcrlraZijl2YwM~aJh-vIUviR-mr-u-gHpPuB~VCe3VeO3cHJkxOZAUxwuO71gmPV~xMhKPw7kbvvekETwjG9k6Is4tOoxWr9scCfXAWSCd57izvrf6Mj00IwltK330rSNat61Vjrrd0UF0XjGygHOW8NdNEeR46FKCklQEQCY3FscGqez0TRk19bFW0tZcm6oSY55FHNY3NCPboBY~GftFII7ySDvpYuxhA7IJ9M52ia24XUYGPT2MSDKRAmha1Pk7DztxKr~txOjzN1yrcYJv6~iBvcy0XrsRWvrxHdpFX7-GoZLLUC7NICt2PDos7Fzw__";
+const HERO_IMG = "https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1920&q=80";
 
 interface Step {
   num: number;

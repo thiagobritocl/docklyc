@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
 
-const HERO_IMG = "https://private-us-east-1.manuscdn.com/sessionFile/Hj4w00wth7LE6lIusnbtO6/sandbox/leyGp7q7co6RgJeaK6NN2S-img-1_1771270029000_na1fn_aGVyby1tYWlu.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSGo0dzAwd3RoN0xFNmxJdXNuYnRPNi9zYW5kYm94L2xleUdwN3E3Y282UmdKZWFLNk5OMlMtaW1nLTFfMTc3MTI3MDAyOTAwMF9uYTFmbl9hR1Z5YnkxdFlXbHUuanBnP3gtb3NzLXByb2Nlc3M9aW1hZ2UvcmVzaXplLHdfMTkyMCxoXzE5MjAvZm9ybWF0LHdlYnAvcXVhbGl0eSxxXzgwIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzk4NzYxNjAwfX19XX0_&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=nk~NBZHWVFvfkmmJKOdYQVm2gu8uZWN3vni2w-15lbTRq7tTSjosH90F9ikiMgSMDxAlvLGvB7qzdg3xnhrZOLYkxJs0omJdjobWvybSMzmk6-DxH1T~lEso9V7H17eyahklyDbl9sWZTS1ZJbknW-Q8pVUPCa7WGB86I~dDhlvcbbd2~X--ZNAN7gQsALTOo9uYGttOVpTyTpwWwSGJ34-8I3E3oMJS-UlSBQ45U4Qzzq~m4rLbt8vGNSqI~PY2RffiJDLo22BLo8nozJMlt~M9vdM1rD-42fFeB56uLgiA6aC5yz-sbxGiCV4Qv3vAdBDCCFIMXx5oksTwfoViqA__";
+const HERO_IMG = "https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1920&q=80";
 
 const sections = [
   {

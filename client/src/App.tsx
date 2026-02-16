@@ -14,24 +14,30 @@ import EstafasPage from "./pages/EstafasPage";
 import MitosPage from "./pages/MitosPage";
 import SobrePage from "./pages/SobrePage";
 import AdminDashboard from "./pages/AdminDashboard";
+import LoginPage from "./pages/LoginPage";
+
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/areas" component={AreasPage} />
-        <Route path="/proceso" component={BoardingPage} />
-        <Route path="/requisitos" component={RequisitosPage} />
-        <Route path="/salarios" component={SalariosPage} />
-        <Route path="/estafas" component={EstafasPage} />
-        <Route path="/mitos" component={MitosPage} />
-        <Route path="/sobre-dockly" component={SobrePage} />
-        <Route path="/admin" component={AdminDashboard} />
-        <Route path="/404" component={NotFound} />
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      <Route path="/login" component={LoginPage} />
+      <Route>
+        <Layout>
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/areas" component={AreasPage} />
+            <Route path="/proceso" component={BoardingPage} />
+            <Route path="/requisitos" component={RequisitosPage} />
+            <Route path="/salarios" component={SalariosPage} />
+            <Route path="/estafas" component={EstafasPage} />
+            <Route path="/mitos" component={MitosPage} />
+            <Route path="/sobre-dockly" component={SobrePage} />
+            <Route path="/admin" component={AdminDashboard} />
+            <Route path="/404" component={NotFound} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 

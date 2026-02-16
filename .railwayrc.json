@@ -1,4 +1,4 @@
 {
-  "projectId": "",
-  "environmentId": ""
+  "projectId": "your-project-id",
+  "environmentId": "production"
 }
