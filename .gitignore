@@ -108,3 +108,7 @@ temp/
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
+.browser_data_dir/
+screenshots/
+terminal_full_output/
+page_texts/
