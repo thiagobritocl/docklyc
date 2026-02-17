@@ -6,7 +6,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
 
 export default function DynamicPage() {
-  const { slug } = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const pageQuery = trpc.cms.public.pages.get.useQuery({ slug: slug || "" }, { enabled: !!slug });
 
   if (pageQuery.isLoading) {

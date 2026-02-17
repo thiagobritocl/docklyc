@@ -26,6 +26,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
@@ -1208,15 +1209,18 @@ function PagesManager() {
     try {
       if (editingId) {
         await updateMutation.mutateAsync({ id: editingId, data: formData });
+        toast.success("Página actualizada con éxito");
       } else {
         await createMutation.mutateAsync(formData);
+        toast.success("Página creada con éxito");
       }
       await pages.refetch();
       setIsOpen(false);
       setEditingId(null);
       setFormData({ slug: "", title: "", subtitle: "", content: "", imageUrl: "", order: 0, showInMenu: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving page:", error);
+      toast.error(`Error al guardar: ${error.message || "Ocurrió un error inesperado"}`);
     }
   };
 
