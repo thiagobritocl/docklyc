@@ -31,7 +31,7 @@ const navLinks = [
   { href: "/estafas", label: "Evita estafas", icon: ShieldAlert },
   { href: "/mitos", label: "Mitos y verdades", icon: HelpCircle },
   { href: "/sobre-dockly", label: "Sobre Dockly", icon: Info },
-  { href: "/teste-de-realidade", label: "Teste de Realidade", icon: FileText },
+  { href: "/teste-de-realidade", label: "Teste de Realidad", icon: Info },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
