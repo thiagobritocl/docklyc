@@ -1,14 +1,31 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import {
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+} from 'lucide-react';
 
 interface Question {
   id: number;
   text: string;
+  feedback: {
+    0: string;
+    1: string;
+    2: string;
+  };
   options: { label: string; score: number }[];
 }
 
@@ -16,6 +33,11 @@ const questions: Question[] = [
   {
     id: 1,
     text: '¿Puedes trabajar 7 días a la semana sin descanso fijo?',
+    feedback: {
+      0: 'La vida a bordo exige continuidad laboral sin días libres.',
+      1: 'Podrías adaptarte, pero será mentalmente exigente.',
+      2: 'Excelente adaptación a la rutina real del barco.',
+    },
     options: [
       { label: 'Sí, sin problema', score: 2 },
       { label: 'Sí, pero sería difícil', score: 1 },
@@ -24,7 +46,12 @@ const questions: Question[] = [
   },
   {
     id: 2,
-    text: '¿Aceptarías jornadas de 10 a 14 horas diarias durante varios meses?',
+    text: '¿Aceptarías jornadas de 10 a 14 horas diarias?',
+    feedback: {
+      0: 'Las jornadas largas son estándar en cruceros.',
+      1: 'Es posible, pero el desgaste es real.',
+      2: 'Buen perfil para ambientes exigentes.',
+    },
     options: [
       { label: 'Sí, estoy preparado', score: 2 },
       { label: 'Podría intentarlo', score: 1 },
@@ -33,7 +60,12 @@ const questions: Question[] = [
   },
   {
     id: 3,
-    text: '¿Te adaptas bien a turnos que implican madrugar o dormir muy tarde?',
+    text: '¿Te adaptas a turnos irregulares?',
+    feedback: {
+      0: 'Los turnos variables son constantes a bordo.',
+      1: 'Podrías adaptarte con esfuerzo.',
+      2: 'Excelente flexibilidad.',
+    },
     options: [
       { label: 'Sí, me adapto bien', score: 2 },
       { label: 'Me cuesta, pero lo manejo', score: 1 },
@@ -42,141 +74,70 @@ const questions: Question[] = [
   },
   {
     id: 4,
-    text: '¿Has trabajado períodos largos sin fines de semana libres?',
-    options: [
-      { label: 'Sí, ya lo he vivido', score: 2 },
-      { label: 'Pocas veces', score: 1 },
-      { label: 'Nunca', score: 0 },
-    ],
-  },
-  {
-    id: 5,
-    text: '¿Puedes pasar muchas horas de pie durante el trabajo?',
-    options: [
-      { label: 'Sí, sin problema', score: 2 },
-      { label: 'Con algo de esfuerzo', score: 1 },
-      { label: 'No, me resulta difícil', score: 0 },
-    ],
-  },
-  {
-    id: 6,
-    text: '¿Aceptarías compartir camarote con otra persona?',
-    options: [
-      { label: 'Sí, no me molesta', score: 2 },
-      { label: 'Dependería de la situación', score: 1 },
-      { label: 'No, necesito privacidad', score: 0 },
-    ],
-  },
-  {
-    id: 7,
-    text: '¿Te adaptas a vivir en espacios pequeños con poca privacidad?',
-    options: [
-      { label: 'Sí, me adapto bien', score: 2 },
-      { label: 'Me costaría un poco', score: 1 },
-      { label: 'No me adaptaría', score: 0 },
-    ],
-  },
-  {
-    id: 8,
-    text: '¿Te sientes cómodo conviviendo con personas de distintas culturas?',
-    options: [
-      { label: 'Sí, me gusta ese entorno', score: 2 },
-      { label: 'Me adapto con el tiempo', score: 1 },
-      { label: 'Me resulta incómodo', score: 0 },
-    ],
-  },
-  {
-    id: 9,
-    text: '¿Has trabajado bajo presión constante?',
-    options: [
-      { label: 'Sí, es parte del trabajo', score: 2 },
-      { label: 'A veces, pero me afecta', score: 1 },
-      { label: 'No, me cuesta mucho', score: 0 },
-    ],
-  },
-  {
-    id: 10,
-    text: '¿Te manejas bien en ambientes con jerarquías estrictas?',
-    options: [
-      { label: 'Sí, sigo reglas sin problema', score: 2 },
-      { label: 'Depende del liderazgo', score: 1 },
-      { label: 'No, me cuesta mucho', score: 0 },
-    ],
-  },
-  {
-    id: 11,
-    text: '¿Te adaptas a reglas estrictas sobre horarios, uniforme y conducta?',
-    options: [
-      { label: 'Sí, totalmente', score: 2 },
-      { label: 'Con algo de dificultad', score: 1 },
-      { label: 'No, me incomoda', score: 0 },
-    ],
-  },
-  {
-    id: 12,
-    text: '¿Puedes pasar meses lejos de tu familia con contacto limitado?',
+    text: '¿Puedes pasar meses lejos de tu familia?',
+    feedback: {
+      0: 'El aislamiento emocional es una de las mayores dificultades.',
+      1: 'Será un reto emocional.',
+      2: 'Alta resiliencia emocional.',
+    },
     options: [
       { label: 'Sí, lo manejo bien', score: 2 },
-      { label: 'Me costaría emocionalmente', score: 1 },
-      { label: 'No podría hacerlo', score: 0 },
+      { label: 'Me costaría', score: 1 },
+      { label: 'No podría', score: 0 },
     ],
   },
 ];
 
 const RealityTestPage: React.FC = () => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
-  const [totalScore, setTotalScore] = useState(0);
 
-  const handleAnswer = (questionId: number, score: number) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: score }));
+  const handleAnswer = (id: number, score: number) => {
+    setAnswers((prev) => ({ ...prev, [id]: score }));
   };
 
-  const calculateResults = () => {
-    const score = Object.values(answers).reduce((sum, s) => sum + s, 0);
-    setTotalScore(score);
-    setShowResults(true);
-  };
-
+  const totalScore = Object.values(answers).reduce(
+    (sum, v) => sum + v,
+    0
+  );
   const maxScore = questions.length * 2;
-  const percentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+  const percentage = Math.round((totalScore / maxScore) * 100);
 
   const result =
-    percentage <= 33
+    percentage < 40
       ? {
           title: '🔴 Alerta de Realidad',
-          description:
-            'Tu perfil muestra una alta incompatibilidad con la vida a bordo. Las exigencias físicas y emocionales pueden generar frustración.',
           icon: <XCircle className="w-16 h-16 text-red-500" />,
+          description:
+            'La vida a bordo puede generar frustración física y emocional.',
         }
-      : percentage <= 66
+      : percentage < 70
       ? {
           title: '🟡 Perfil en Construcción',
+          icon: (
+            <AlertTriangle className="w-16 h-16 text-yellow-500" />
+          ),
           description:
-            'Existe compatibilidad parcial con la vida a bordo. Con preparación y expectativas realistas, podrías adaptarte.',
-          icon: <AlertTriangle className="w-16 h-16 text-yellow-500" />,
+            'Con preparación mental y expectativas claras, podrías adaptarte.',
         }
       : {
-          title: '🟢 Perfil Compatible con la Vida a Bordo',
+          title: '🟢 Perfil Compatible',
+          icon: (
+            <CheckCircle className="w-16 h-16 text-green-500" />
+          ),
           description:
-            'Tu perfil es compatible con la rutina real de trabajo en cruceros. Tienes buena capacidad de adaptación.',
-          icon: <CheckCircle className="w-16 h-16 text-green-500" />,
+            'Tu perfil encaja bien con la realidad laboral en cruceros.',
         };
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-3xl">
+    <div className="container mx-auto py-10 max-w-3xl px-4">
       <h1 className="text-4xl font-bold text-center mb-6">
-        Test de Realidad
+        Test de Realidad – Vida a Bordo
       </h1>
 
-      <p className="text-center text-muted-foreground mb-8">
-        Este test no mide talento ni garantiza empleo. Evalúa tu compatibilidad
-        con la realidad de la vida a bordo en cruceros.
-      </p>
-
       <Progress
-        value={((currentQuestionIndex + 1) / questions.length) * 100}
+        value={((current + 1) / questions.length) * 100}
         className="mb-6"
       />
 
@@ -184,26 +145,30 @@ const RealityTestPage: React.FC = () => {
         <Card>
           <CardHeader>
             <CardTitle>
-              {currentQuestionIndex + 1}.{' '}
-              {questions[currentQuestionIndex].text}
+              {current + 1}. {questions[current].text}
             </CardTitle>
           </CardHeader>
-
           <CardContent>
             <RadioGroup
-              onValueChange={(value) =>
+              className="space-y-4"
+              onValueChange={(v) =>
                 handleAnswer(
-                  questions[currentQuestionIndex].id,
-                  parseInt(value)
+                  questions[current].id,
+                  Number(v)
                 )
               }
-              className="space-y-4"
             >
-              {questions[currentQuestionIndex].options.map((o, i) => {
-                const id = `q-${questions[currentQuestionIndex].id}-${i}`;
+              {questions[current].options.map((o, i) => {
+                const id = `q-${current}-${i}`;
                 return (
-                  <div key={id} className="flex items-center gap-3">
-                    <RadioGroupItem id={id} value={o.score.toString()} />
+                  <div
+                    key={id}
+                    className="flex items-center gap-3"
+                  >
+                    <RadioGroupItem
+                      id={id}
+                      value={o.score.toString()}
+                    />
                     <Label htmlFor={id}>{o.label}</Label>
                   </div>
                 );
@@ -213,43 +178,67 @@ const RealityTestPage: React.FC = () => {
             <Button
               className="mt-6 w-full"
               onClick={() =>
-                currentQuestionIndex === questions.length - 1
-                  ? calculateResults()
-                  : setCurrentQuestionIndex((p) => p + 1)
+                current === questions.length - 1
+                  ? setShowResults(true)
+                  : setCurrent((p) => p + 1)
               }
             >
-              {currentQuestionIndex === questions.length - 1
+              {current === questions.length - 1
                 ? 'Ver Resultado'
                 : 'Siguiente'}
             </Button>
           </CardContent>
         </Card>
       ) : (
-        <Card className="text-center">
-          <CardHeader className="flex flex-col items-center gap-4">
-            {result.icon}
-            <CardTitle>{result.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">{result.description}</p>
-            <Button
-              className="mt-6"
-              onClick={() => {
-                setAnswers({});
-                setTotalScore(0);
-                setShowResults(false);
-                setCurrentQuestionIndex(0);
-              }}
-            >
-              Repetir Test
-            </Button>
-          </CardContent>
-        </Card>
+        <>
+          <Card className="text-center mb-6">
+            <CardHeader className="flex flex-col items-center gap-4">
+              {result.icon}
+              <CardTitle>{result.title}</CardTitle>
+              <p className="text-2xl font-bold">
+                {percentage}% de compatibilidad
+              </p>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                {result.description}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Feedback por Pregunta</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {questions.map((q) => (
+                <div key={q.id}>
+                  <p className="font-semibold">{q.text}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {q.feedback[
+                      answers[q.id] as 0 | 1 | 2
+                    ]}
+                  </p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          <Button
+            className="mt-6 w-full"
+            onClick={() => {
+              setAnswers({});
+              setCurrent(0);
+              setShowResults(false);
+            }}
+          >
+            Repetir Test
+          </Button>
+        </>
       )}
 
       <footer className="mt-10 text-center text-sm text-muted-foreground">
-        Dockly es un sitio independiente de orientación. Este test es solo
-        informativo.
+        Dockly · Test informativo · No garantiza empleo
       </footer>
     </div>
   );
