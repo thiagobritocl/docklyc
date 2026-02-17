@@ -2,70 +2,27 @@ import { motion } from "framer-motion";
 import { DollarSign, Info, TrendingUp } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
+import { trpc } from "@/lib/trpc";
+import { useMemo } from "react";
 
 const HERO_IMG = "https://images.unsplash.com/photo-1559599746-8823b38544c6?w=1920&q=80";
 
-interface SalaryRow {
-  cargo: string;
-  rangoMin: number;
-  rangoMax: number;
-  propinas: string;
-  notas: string;
-}
-
-const salaryData: { dept: string; rows: SalaryRow[] }[] = [
-  {
-    dept: "Hotel / Housekeeping",
-    rows: [
-      { cargo: "Stateroom Attendant", rangoMin: 1200, rangoMax: 2000, propinas: "Si (significativas)", notas: "Propinas pueden duplicar el salario base" },
-      { cargo: "Public Area Cleaner", rangoMin: 1000, rangoMax: 1500, propinas: "Limitadas", notas: "Salario base mas estable" },
-      { cargo: "Laundry Attendant", rangoMin: 900, rangoMax: 1400, propinas: "No", notas: "Sin contacto directo con pasajeros" },
-      { cargo: "Housekeeping Supervisor", rangoMin: 1800, rangoMax: 2800, propinas: "Si", notas: "Requiere experiencia previa a bordo" },
-    ],
-  },
-  {
-    dept: "Alimentos y Bebidas",
-    rows: [
-      { cargo: "Assistant Waiter", rangoMin: 1200, rangoMax: 1800, propinas: "Si", notas: "Propinas compartidas con equipo" },
-      { cargo: "Waiter", rangoMin: 1500, rangoMax: 2500, propinas: "Si (altas)", notas: "Propinas pueden ser muy significativas" },
-      { cargo: "Head Waiter", rangoMin: 2200, rangoMax: 3500, propinas: "Si", notas: "Puesto de supervision" },
-      { cargo: "Bartender", rangoMin: 1400, rangoMax: 2200, propinas: "Si", notas: "Varia segun ubicacion del bar" },
-      { cargo: "Buffet Attendant", rangoMin: 1000, rangoMax: 1600, propinas: "Limitadas", notas: "Menor interaccion con pasajeros" },
-    ],
-  },
-  {
-    dept: "Cocina / Galley",
-    rows: [
-      { cargo: "Galley Steward", rangoMin: 800, rangoMax: 1200, propinas: "No", notas: "Puesto entry-level" },
-      { cargo: "Commis Chef", rangoMin: 1200, rangoMax: 1800, propinas: "No", notas: "Cocinero junior" },
-      { cargo: "Chef de Partie", rangoMin: 2000, rangoMax: 3200, propinas: "No", notas: "Jefe de seccion" },
-      { cargo: "Sous Chef", rangoMin: 3000, rangoMax: 4500, propinas: "No", notas: "Segundo al mando" },
-      { cargo: "Executive Chef", rangoMin: 5000, rangoMax: 8000, propinas: "No", notas: "Maximo responsable" },
-    ],
-  },
-  {
-    dept: "Entretenimiento",
-    rows: [
-      { cargo: "Youth Staff", rangoMin: 1200, rangoMax: 1800, propinas: "No", notas: "Programas infantiles" },
-      { cargo: "Activities Coordinator", rangoMin: 1500, rangoMax: 2500, propinas: "No", notas: "Animacion de actividades" },
-      { cargo: "Musician", rangoMin: 2000, rangoMax: 4000, propinas: "Posibles", notas: "Varia segun tipo de contrato" },
-      { cargo: "Cruise Director", rangoMin: 4000, rangoMax: 7000, propinas: "No", notas: "Puesto de alta responsabilidad" },
-    ],
-  },
-  {
-    dept: "Otros departamentos",
-    rows: [
-      { cargo: "Casino Dealer", rangoMin: 1200, rangoMax: 2000, propinas: "Si", notas: "Propinas variables" },
-      { cargo: "Spa Therapist", rangoMin: 1000, rangoMax: 1500, propinas: "Si + comisiones", notas: "Ingresos dependen de ventas" },
-      { cargo: "Shop Assistant", rangoMin: 1200, rangoMax: 1800, propinas: "No + comisiones", notas: "Comisiones por ventas" },
-      { cargo: "Guest Services Agent", rangoMin: 1800, rangoMax: 2800, propinas: "Limitadas", notas: "Requiere ingles avanzado" },
-      { cargo: "Able Seaman", rangoMin: 1800, rangoMax: 2800, propinas: "No", notas: "Departamento de Cubierta" },
-      { cargo: "Third Engineer", rangoMin: 3000, rangoMax: 4500, propinas: "No", notas: "Departamento de Motor" },
-    ],
-  },
-];
-
 export default function SalariosPage() {
+  const { data: cmsSalaries, isLoading } = trpc.cms.public.salaries.useQuery();
+
+  // Group salaries by department
+  const groupedSalaries = useMemo(() => {
+    if (!cmsSalaries || cmsSalaries.length === 0) return null;
+    const groups: Record<string, typeof cmsSalaries> = {};
+    for (const salary of cmsSalaries) {
+      if (!groups[salary.department]) {
+        groups[salary.department] = [];
+      }
+      groups[salary.department].push(salary);
+    }
+    return Object.entries(groups).map(([dept, rows]) => ({ dept, rows }));
+  }, [cmsSalaries]);
+
   return (
     <div>
       <PageHero
@@ -101,45 +58,51 @@ export default function SalariosPage() {
         </div>
 
         {/* Salary tables */}
-        <div className="space-y-8">
-          {salaryData.map((section, si) => (
-            <motion.div
-              key={section.dept}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.35, delay: si * 0.05 }}
-            >
-              <h2 className="text-xl font-bold mb-4">{section.dept}</h2>
-              <div className="rounded-xl border border-border overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-card">
-                        <th className="text-left p-3 font-semibold text-muted-foreground">Cargo</th>
-                        <th className="text-left p-3 font-semibold text-muted-foreground">Rango mensual (USD)</th>
-                        <th className="text-left p-3 font-semibold text-muted-foreground">Propinas</th>
-                        <th className="text-left p-3 font-semibold text-muted-foreground hidden sm:table-cell">Notas</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {section.rows.map((row, ri) => (
-                        <tr key={row.cargo} className={ri % 2 === 0 ? "bg-background/30" : "bg-card/50"}>
-                          <td className="p-3 font-medium text-foreground">{row.cargo}</td>
-                          <td className="p-3 font-mono text-emerald-400">
-                            ${row.rangoMin.toLocaleString()} - ${row.rangoMax.toLocaleString()}
-                          </td>
-                          <td className="p-3 text-muted-foreground">{row.propinas}</td>
-                          <td className="p-3 text-muted-foreground text-xs hidden sm:table-cell">{row.notas}</td>
+        {isLoading ? (
+          <div className="text-center py-12 text-muted-foreground">Cargando salarios...</div>
+        ) : groupedSalaries ? (
+          <div className="space-y-8">
+            {groupedSalaries.map((section, si) => (
+              <motion.div
+                key={section.dept}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35, delay: si * 0.05 }}
+              >
+                <h2 className="text-xl font-bold mb-4">{section.dept}</h2>
+                <div className="rounded-xl border border-border overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-card">
+                          <th className="text-left p-3 font-semibold text-muted-foreground">Cargo</th>
+                          <th className="text-left p-3 font-semibold text-muted-foreground">Rango mensual (USD)</th>
+                          <th className="text-left p-3 font-semibold text-muted-foreground">Propinas</th>
+                          <th className="text-left p-3 font-semibold text-muted-foreground hidden sm:table-cell">Notas</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {section.rows.map((row, ri) => (
+                          <tr key={row.id} className={ri % 2 === 0 ? "bg-background/30" : "bg-card/50"}>
+                            <td className="p-3 font-medium text-foreground">{row.position}</td>
+                            <td className="p-3 font-mono text-emerald-400">
+                              ${row.minSalary.toLocaleString()} - ${row.maxSalary.toLocaleString()}
+                            </td>
+                            <td className="p-3 text-muted-foreground">{row.tips || "-"}</td>
+                            <td className="p-3 text-muted-foreground text-xs hidden sm:table-cell">{row.notes || "-"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 text-muted-foreground">No hay datos de salarios disponibles.</div>
+        )}
 
         {/* Additional notes */}
         <div className="mt-10 rounded-xl bg-card border border-border p-6">

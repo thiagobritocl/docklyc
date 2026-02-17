@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { protectedProcedure, router } from "../_core/trpc";
+import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
 import {
   getWorkAreas,
   getWorkAreaById,
@@ -28,11 +28,14 @@ import {
   deleteMyth,
   getLegalDisclaimers,
   getLegalDisclaimerByKey,
+  createLegalDisclaimer,
   updateLegalDisclaimer,
+  deleteLegalDisclaimer,
   getAboutPage,
   updateAboutPage,
 } from "../db";
 import { TRPCError } from "@trpc/server";
+import { seedDatabase } from "../seed";
 
 // Helper to ensure admin access
 const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
@@ -95,6 +98,24 @@ const mythSchema = z.object({
 });
 
 export const cmsRouter = router({
+  // ============ Seed Database ============
+  seed: adminProcedure.mutation(async () => {
+    await seedDatabase();
+    return { success: true, message: "Database seeded successfully" };
+  }),
+
+  // ============ Public Routes (no auth required) ============
+  public: router({
+    workAreas: publicProcedure.query(() => getWorkAreas()),
+    boardingSteps: publicProcedure.query(() => getBoardingSteps()),
+    requirements: publicProcedure.input(z.object({ category: z.string().optional() }).optional()).query(({ input }) => getRequirements(input?.category)),
+    salaries: publicProcedure.query(() => getSalaryData()),
+    fraudSignals: publicProcedure.input(z.object({ category: z.string().optional() }).optional()).query(({ input }) => getFraudSignals(input?.category)),
+    myths: publicProcedure.query(() => getMyths()),
+    disclaimers: publicProcedure.query(() => getLegalDisclaimers()),
+    disclaimer: publicProcedure.input(z.object({ key: z.string() })).query(({ input }) => getLegalDisclaimerByKey(input.key)),
+  }),
+
   // ============ Work Areas ============
   workAreas: router({
     list: protectedProcedure.query(() => getWorkAreas()),
@@ -222,6 +243,23 @@ export const cmsRouter = router({
     get: protectedProcedure.input(z.object({ key: z.string() })).query(({ input }) => {
       return getLegalDisclaimerByKey(input.key);
     }),
+    create: adminProcedure
+      .input(
+        z.object({
+          key: z.string().min(1),
+          title: z.string().min(1),
+          content: z.string().min(1),
+          isActive: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        return createLegalDisclaimer({
+          key: input.key,
+          title: input.title,
+          content: input.content,
+          isActive: input.isActive ?? true,
+        });
+      }),
     update: adminProcedure
       .input(
         z.object({
@@ -235,6 +273,11 @@ export const cmsRouter = router({
       )
       .mutation(async ({ input }) => {
         return updateLegalDisclaimer(input.key, input.data);
+      }),
+    delete: adminProcedure
+      .input(z.object({ key: z.string() }))
+      .mutation(async ({ input }) => {
+        return deleteLegalDisclaimer(input.key);
       }),
   }),
 

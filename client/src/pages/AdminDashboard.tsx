@@ -106,6 +106,9 @@ export default function AdminDashboard() {
         </p>
       </div>
 
+      {/* Seed Button + Stats */}
+      <SeedButton />
+
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-6">
@@ -998,25 +1001,175 @@ function MythsManager() {
   );
 }
 
+// ============ Seed Button ============
+function SeedButton() {
+  const seedMutation = trpc.cms.seed.useMutation();
+  const [done, setDone] = useState(false);
+
+  const handleSeed = async () => {
+    try {
+      await seedMutation.mutateAsync();
+      setDone(true);
+      // Reload page to refresh all data
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (error) {
+      console.error("Error seeding:", error);
+    }
+  };
+
+  return (
+    <Card className="p-4 bg-blue-500/10 border-blue-500/20">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <BarChart3 className="w-5 h-5 text-blue-400" />
+          <div>
+            <h3 className="font-semibold text-sm">Inicializar datos</h3>
+            <p className="text-xs text-muted-foreground">Carga los datos predeterminados en la base de datos (solo si las tablas estan vacias)</p>
+          </div>
+        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleSeed}
+          disabled={seedMutation.isPending || done}
+        >
+          {seedMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+          {done ? "Listo!" : "Inicializar"}
+        </Button>
+      </div>
+    </Card>
+  );
+}
+
 // ============ Disclaimers Manager ============
 function DisclaimersManager() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingKey, setEditingKey] = useState<string | null>(null);
+  const [formData, setFormData] = useState({ key: "", title: "", content: "" });
+  const [deleteKey, setDeleteKey] = useState<string | null>(null);
+
   const disclaimers = trpc.cms.disclaimers.list.useQuery();
+  const createMutation = trpc.cms.disclaimers.create.useMutation();
+  const updateMutation = trpc.cms.disclaimers.update.useMutation();
+  const deleteMutation = trpc.cms.disclaimers.delete.useMutation();
+
+  const handleSave = async () => {
+    try {
+      if (editingKey) {
+        await updateMutation.mutateAsync({ key: editingKey, data: { title: formData.title, content: formData.content } });
+      } else {
+        await createMutation.mutateAsync(formData);
+      }
+      await disclaimers.refetch();
+      setIsOpen(false);
+      setFormData({ key: "", title: "", content: "" });
+      setEditingKey(null);
+    } catch (error) {
+      console.error("Error saving disclaimer:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (deleteKey) {
+      try {
+        await deleteMutation.mutateAsync({ key: deleteKey });
+        await disclaimers.refetch();
+        setDeleteKey(null);
+      } catch (error) {
+        console.error("Error deleting disclaimer:", error);
+      }
+    }
+  };
 
   return (
     <Card className="p-6 mt-6">
-      <h3 className="text-lg font-bold mb-4">Avisos legales</h3>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-bold">Avisos legales</h3>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm" onClick={() => { setEditingKey(null); setFormData({ key: "", title: "", content: "" }); }}>
+              <Plus className="w-4 h-4 mr-2" /> Nuevo
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{editingKey ? "Editar" : "Crear"} Aviso legal</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Input
+                placeholder="Clave unica (ej: home_disclaimer)"
+                value={formData.key}
+                onChange={(e) => setFormData({ ...formData, key: e.target.value })}
+                disabled={!!editingKey}
+              />
+              <Input placeholder="Titulo" value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+              <Textarea placeholder="Contenido" value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} rows={5} />
+              <Button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending}>
+                {createMutation.isPending || updateMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                Guardar
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
       {disclaimers.isLoading ? (
         <div className="text-center py-8">Cargando...</div>
       ) : (
-        <div className="space-y-4">
-          {disclaimers.data?.map((disclaimer) => (
-            <Card key={disclaimer.key} className="p-4 border">
-              <h4 className="font-semibold">{disclaimer.title}</h4>
-              <p className="text-sm text-muted-foreground mt-2">{disclaimer.content}</p>
-            </Card>
-          ))}
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Clave</TableHead>
+              <TableHead>Titulo</TableHead>
+              <TableHead>Contenido</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {disclaimers.data?.map((disclaimer) => (
+              <TableRow key={disclaimer.key}>
+                <TableCell className="font-mono text-xs">{disclaimer.key}</TableCell>
+                <TableCell>{disclaimer.title}</TableCell>
+                <TableCell className="max-w-xs truncate">{disclaimer.content}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingKey(disclaimer.key);
+                        setFormData({ key: disclaimer.key, title: disclaimer.title, content: disclaimer.content });
+                        setIsOpen(true);
+                      }}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setDeleteKey(disclaimer.key)}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
+
+      <AlertDialog open={deleteKey !== null} onOpenChange={(open) => !open && setDeleteKey(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminar este aviso legal?</AlertDialogTitle>
+            <AlertDialogDescription>Esta accion no se puede deshacer.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex gap-2 justify-end">
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={deleteMutation.isPending}>
+              {deleteMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              Eliminar
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }

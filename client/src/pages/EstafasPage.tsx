@@ -1,28 +1,11 @@
 import { motion } from "framer-motion";
-import { ShieldAlert, AlertTriangle, XCircle, CheckCircle2, Search, Ban, DollarSign, FileWarning } from "lucide-react";
+import { AlertTriangle, XCircle, CheckCircle2, Search, Ban, DollarSign } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
+import { trpc } from "@/lib/trpc";
+import { useMemo } from "react";
 
-const senales = [
-  "Prometen embarque garantizado o empleo seguro",
-  "Cobran por vacantes, contratos o 'acceso a bases de datos'",
-  "Solicitan pagos urgentes sin documentacion formal",
-  "Usan correos no oficiales (gmail, hotmail) en lugar de dominios corporativos",
-  "No tienen sitio web profesional o su presencia en linea es minima",
-  "Presionan para que tomes decisiones rapidas sin tiempo para pensar",
-  "Ofrecen salarios muy por encima del promedio del mercado",
-  "No pueden demostrar relacion con navieras especificas",
-  "Piden informacion personal sensible antes de cualquier proceso formal",
-  "No proporcionan contrato escrito ni documentacion oficial",
-];
-
-const cobrosIlegales = [
-  { item: "Pago por conseguir empleo o 'colocarte' en una naviera", desc: "Ninguna agencia legitima cobra al candidato por conseguirle trabajo. La naviera paga a la agencia, no tu." },
-  { item: "Pago por 'contactos internos' o 'acceso privilegiado'", desc: "No existen atajos pagados para conseguir empleo en cruceros. Quien te lo ofrezca, te esta estafando." },
-  { item: "Pago por 'reservar' una vacante o 'asegurar' tu puesto", desc: "Las vacantes no se reservan con dinero. El proceso de seleccion es por merito y requisitos." },
-  { item: "Comisiones por 'gestionar' tu documentacion", desc: "Tu documentacion la gestionas directamente con las instituciones oficiales. No necesitas intermediarios pagados." },
-];
-
+// Static data for legitimate costs (not managed in CMS)
 const cobrosLegitimos = [
   { item: "Certificados STCW", desc: "Se pagan directamente a centros de formacion maritima autorizados. Costo aproximado: $200-$800 USD dependiendo del pais." },
   { item: "Examen medico maritimo", desc: "Se paga directamente a la clinica autorizada por la autoridad maritima. Costo aproximado: $100-$300 USD." },
@@ -31,16 +14,18 @@ const cobrosLegitimos = [
   { item: "Libreta de embarque", desc: "Se tramita ante la autoridad maritima de tu pais. Costo variable." },
 ];
 
-const verificacion = [
-  { title: "Registro legal", desc: "Verifica que la agencia tenga registro mercantil, RUT/NIT y domicilio fiscal real. Busca su nombre en registros publicos." },
-  { title: "Presencia web real", desc: "Sitio web profesional con dominio propio, informacion de contacto verificable, direccion fisica y equipo identificable." },
-  { title: "Politica de no cobro al candidato", desc: "Las agencias legitimas declaran abiertamente que no cobran a los candidatos. Si no lo mencionan, pregunta directamente." },
-  { title: "Relacion comprobable con navieras", desc: "Deben poder demostrar que son agencias autorizadas por navieras especificas. Puedes verificar en los sitios web oficiales de las navieras." },
-  { title: "Referencias verificables", desc: "Busca resenas, testimonios y referencias de personas que hayan embarcado a traves de esa agencia. Verifica que sean reales." },
-  { title: "Proceso transparente", desc: "El proceso de seleccion debe ser claro, con etapas definidas y comunicacion profesional. Desconfia de procesos 'express'." },
-];
-
 export default function EstafasPage() {
+  const { data: cmsSignals, isLoading } = trpc.cms.public.fraudSignals.useQuery();
+
+  const { redFlags, illegalCharges, verificationTips } = useMemo(() => {
+    if (!cmsSignals || cmsSignals.length === 0) return { redFlags: [], illegalCharges: [], verificationTips: [] };
+    return {
+      redFlags: cmsSignals.filter(s => s.category === "red_flag"),
+      illegalCharges: cmsSignals.filter(s => s.category === "illegal_charge"),
+      verificationTips: cmsSignals.filter(s => s.category === "verification_tip"),
+    };
+  }, [cmsSignals]);
+
   return (
     <div>
       <PageHero
@@ -52,133 +37,149 @@ export default function EstafasPage() {
       <section className="container py-12">
         <LegalDisclaimer text="Esta informacion es orientativa y busca ayudarte a identificar posibles fraudes. Ante cualquier duda, consulta con las autoridades competentes de tu pais." />
 
-        {/* Red flags */}
-        <div className="mt-10 mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-400" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">Senales de fraude</h2>
-              <p className="text-sm text-muted-foreground">Si detectas alguna de estas senales, procede con extrema precaucion.</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {senales.map((s, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.03 }}
-                className="flex items-start gap-3 p-3 rounded-lg bg-red-500/5 border border-red-500/10"
-              >
-                <XCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
-                <p className="text-sm text-zinc-300">{s}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Illegal charges */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-              <Ban className="w-5 h-5 text-amber-400" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">Cobros ilegales</h2>
-              <p className="text-sm text-muted-foreground">Estos cobros NO deben existir en un proceso legitimo.</p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {cobrosIlegales.map((c, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
-                className="p-4 rounded-xl bg-card border border-border"
-              >
-                <div className="flex items-start gap-3">
-                  <span className="w-6 h-6 rounded-full bg-red-500/15 flex items-center justify-center shrink-0 mt-0.5">
-                    <Ban className="w-3.5 h-3.5 text-red-400" />
-                  </span>
+        {isLoading ? (
+          <div className="text-center py-12 text-muted-foreground">Cargando...</div>
+        ) : (
+          <>
+            {/* Red flags */}
+            {redFlags.length > 0 && (
+              <div className="mt-10 mb-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                    <AlertTriangle className="w-5 h-5 text-red-400" />
+                  </div>
                   <div>
-                    <h3 className="font-semibold text-sm text-red-300 mb-1">{c.item}</h3>
-                    <p className="text-sm text-muted-foreground">{c.desc}</p>
+                    <h2 className="text-2xl font-bold">Senales de fraude</h2>
+                    <p className="text-sm text-muted-foreground">Si detectas alguna de estas senales, procede con extrema precaucion.</p>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
 
-        {/* Legitimate costs */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-emerald-400" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">Pagos que pueden existir</h2>
-              <p className="text-sm text-muted-foreground">Estos son costos reales que se pagan directamente a instituciones oficiales.</p>
-            </div>
-          </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {redFlags.map((s, i) => (
+                    <motion.div
+                      key={s.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.03 }}
+                      className="flex items-start gap-3 p-3 rounded-lg bg-red-500/5 border border-red-500/10"
+                    >
+                      <XCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
+                      <p className="text-sm text-zinc-300">{s.signal}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          <div className="space-y-3">
-            {cobrosLegitimos.map((c, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -12 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
-                className="p-4 rounded-xl bg-card border border-border"
-              >
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+            {/* Illegal charges */}
+            {illegalCharges.length > 0 && (
+              <div className="mb-12">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                    <Ban className="w-5 h-5 text-amber-400" />
+                  </div>
                   <div>
-                    <h3 className="font-semibold text-sm mb-1">{c.item}</h3>
-                    <p className="text-sm text-muted-foreground">{c.desc}</p>
+                    <h2 className="text-2xl font-bold">Cobros ilegales</h2>
+                    <p className="text-sm text-muted-foreground">Estos cobros NO deben existir en un proceso legitimo.</p>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
 
-        {/* How to verify */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <Search className="w-5 h-5 text-blue-400" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">Como verificar agencias</h2>
-              <p className="text-sm text-muted-foreground">Antes de confiar en cualquier agencia, verifica estos puntos.</p>
-            </div>
-          </div>
+                <div className="space-y-3">
+                  {illegalCharges.map((c, i) => {
+                    const parts = c.signal.split(" — ");
+                    const title = parts[0];
+                    const desc = parts[1] || "";
+                    return (
+                      <motion.div
+                        key={c.id}
+                        initial={{ opacity: 0, x: -12 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.3, delay: i * 0.05 }}
+                        className="p-4 rounded-xl bg-card border border-border"
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="w-6 h-6 rounded-full bg-red-500/15 flex items-center justify-center shrink-0 mt-0.5">
+                            <Ban className="w-3.5 h-3.5 text-red-400" />
+                          </span>
+                          <div>
+                            <h3 className="font-semibold text-sm text-red-300 mb-1">{title}</h3>
+                            {desc && <p className="text-sm text-muted-foreground">{desc}</p>}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {verificacion.map((v, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
-                className="p-4 rounded-xl bg-card border border-border"
-              >
-                <h3 className="font-semibold text-sm mb-2 text-blue-300">{v.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{v.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+            {/* Legitimate costs */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold">Pagos que pueden existir</h2>
+                  <p className="text-sm text-muted-foreground">Estos son costos reales que se pagan directamente a instituciones oficiales.</p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {cobrosLegitimos.map((c, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -12 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.05 }}
+                    className="p-4 rounded-xl bg-card border border-border"
+                  >
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                      <div>
+                        <h3 className="font-semibold text-sm mb-1">{c.item}</h3>
+                        <p className="text-sm text-muted-foreground">{c.desc}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* How to verify */}
+            {verificationTips.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <Search className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">Como verificar agencias</h2>
+                    <p className="text-sm text-muted-foreground">Antes de confiar en cualquier agencia, verifica estos puntos.</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {verificationTips.map((v, i) => (
+                    <motion.div
+                      key={v.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                      className="p-4 rounded-xl bg-card border border-border"
+                    >
+                      <p className="text-sm text-muted-foreground leading-relaxed">{v.signal}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </section>
     </div>
   );

@@ -7,6 +7,7 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { seedDatabase } from "../seed";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -57,8 +58,14 @@ async function startServer() {
     console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
   }
 
-  server.listen(port, () => {
+  server.listen(port, async () => {
     console.log(`Server running on http://localhost:${port}/`);
+    // Auto-seed database with initial content if tables are empty
+    try {
+      await seedDatabase();
+    } catch (err) {
+      console.warn("[Seed] Auto-seed skipped or failed:", err);
+    }
   });
 }
 

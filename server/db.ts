@@ -291,10 +291,22 @@ export async function getLegalDisclaimerByKey(key: string) {
   return result[0];
 }
 
+export async function createLegalDisclaimer(data: Omit<LegalDisclaimer, 'id' | 'createdAt' | 'updatedAt'>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(legalDisclaimers).values(data);
+}
+
 export async function updateLegalDisclaimer(key: string, data: Partial<Omit<LegalDisclaimer, 'id' | 'createdAt'>>) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   return db.update(legalDisclaimers).set(data).where(eq(legalDisclaimers.key, key));
+}
+
+export async function deleteLegalDisclaimer(key: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(legalDisclaimers).set({ isActive: false }).where(eq(legalDisclaimers.key, key));
 }
 
 // About Page
