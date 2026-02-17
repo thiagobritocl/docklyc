@@ -71,6 +71,14 @@ const sections = [
     color: "text-rose-400",
     bg: "bg-rose-400/10",
   },
+  {
+    href: "/teste-de-realidade",
+    icon: HelpCircle,
+    title: "Teste de Realidad",
+    desc: "Descubre si realmente estás listo para la vida y el trabajo a bordo de un crucero.",
+    color: "text-indigo-400",
+    bg: "bg-indigo-400/10",
+  },
 ];
 
 const stagger = {
