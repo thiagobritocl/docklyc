@@ -9,7 +9,6 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Ship,
   Menu,
   X,
   Anchor,

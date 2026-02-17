@@ -63,8 +63,9 @@ async function startServer() {
     // Auto-seed database with initial content if tables are empty
     try {
       await seedDatabase();
+      console.log("[Seed] Auto-seed completed successfully.");
     } catch (err) {
-      console.warn("[Seed] Auto-seed skipped or failed:", err);
+      console.error("[Seed] Auto-seed failed critically:", err);
     }
   });
 }

@@ -12,6 +12,7 @@ import {
   fraudSignals,
   myths,
   legalDisclaimers,
+  dynamicPages,
 } from "../drizzle/schema";
 import { sql } from "drizzle-orm";
 
@@ -423,6 +424,13 @@ export async function seedDatabase() {
       },
     ]);
     console.log("[Seed] Legal disclaimers seeded.");
+  }
+
+  // ============ Dynamic Pages ============
+  const pagesCount = await db.select({ count: sql<number>`count(*)` }).from(dynamicPages);
+  if (Number(pagesCount[0].count) === 0) {
+    console.log("[Seed] Seeding dynamic pages...");
+    // No initial dynamic pages needed, but we check to avoid errors
   }
 
   console.log("[Seed] Database seed complete!");
