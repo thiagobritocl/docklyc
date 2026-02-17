@@ -1228,10 +1228,14 @@ function PagesManager() {
     if (deleteId) {
       try {
         await deleteMutation.mutateAsync({ id: deleteId });
+        toast.success("Página eliminada con éxito");
         await pages.refetch();
+        // Invalidar el cache de páginas públicas para actualizar el menú
+        await trpc.cms.public.pages.list.invalidate();
         setDeleteId(null);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error deleting page:", error);
+        toast.error(`Error al eliminar: ${error.message || "Ocurrió un error inesperado"}`);
       }
     }
   };
