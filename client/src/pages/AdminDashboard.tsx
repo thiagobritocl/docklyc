@@ -21,7 +21,7 @@ import {
   Trash2,
   Loader2,
 } from "lucide-react";
-import { trpc } from "@/_core/trpc";
+import { trpc } from "@/lib/trpc";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
