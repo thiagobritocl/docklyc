@@ -188,3 +188,23 @@ export const auditLog = mysqlTable("audit_log", {
 
 export type AuditLog = typeof auditLog.$inferSelect;
 export type InsertAuditLog = typeof auditLog.$inferInsert;
+
+/**
+ * Páginas dinâmicas criadas pelo admin
+ */
+export const dynamicPages = mysqlTable("dynamic_pages", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 100 }).notNull().unique(), // URL amigável
+  title: varchar("title", { length: 255 }).notNull(),
+  subtitle: text("subtitle"),
+  content: text("content").notNull(), // Conteúdo em Markdown ou HTML
+  imageUrl: text("imageUrl"),
+  order: int("order").default(0).notNull(),
+  showInMenu: boolean("showInMenu").default(true).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type DynamicPage = typeof dynamicPages.$inferSelect;
+export type InsertDynamicPage = typeof dynamicPages.$inferInsert;

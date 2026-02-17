@@ -20,7 +20,9 @@ import {
   HelpCircle,
   Info,
   MapPin,
+  FileText,
 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 const navLinks = [
   { href: "/areas", label: "Áreas de trabajo", icon: Briefcase },
@@ -33,6 +35,15 @@ const navLinks = [
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const dynamicPagesQuery = trpc.cms.public.pages.list.useQuery();
+  const allNavLinks = [
+    ...navLinks,
+    ...(dynamicPagesQuery.data?.map(page => ({
+      href: `/p/${page.slug}`,
+      label: page.title,
+      icon: FileText
+    })) || [])
+  ];
   const [location] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -68,7 +79,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* Desktop nav */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
+            {allNavLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -104,7 +115,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               className="lg:hidden bg-background/95 backdrop-blur-xl border-b border-border overflow-hidden"
             >
               <div className="container py-4 space-y-1">
-                {navLinks.map((link) => {
+                {allNavLinks.map((link) => {
                   const Icon = link.icon;
                   return (
                     <Link
@@ -151,7 +162,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="space-y-3">
               <h4 className="text-sm font-semibold text-foreground">Navegación</h4>
               <div className="grid grid-cols-2 gap-2">
-                {navLinks.map((link) => (
+                {allNavLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}

@@ -20,6 +20,8 @@ import {
   Edit,
   Trash2,
   Loader2,
+  FileText,
+  Eye,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { Textarea } from "@/components/ui/textarea";
@@ -93,6 +95,13 @@ export default function AdminDashboard() {
       description: "Disclaimers y responsabilidades",
       icon: AlertTriangle,
       color: "text-orange-500",
+    },
+    {
+      id: "pages",
+      title: "Páginas",
+      description: "Crea y gestiona páginas personalizadas",
+      icon: FileText,
+      color: "text-indigo-500",
     },
   ];
 
@@ -178,6 +187,7 @@ export default function AdminDashboard() {
       {activeSection === "fraude" && <FraudSignalsManager />}
       {activeSection === "mitos" && <MythsManager />}
       {activeSection === "disclaimers" && <DisclaimersManager />}
+      {activeSection === "pages" && <PagesManager />}
 
       {/* Important Notice */}
       <Card className="p-6 bg-amber-500/10 border-amber-500/20">
@@ -1165,6 +1175,185 @@ function DisclaimersManager() {
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} disabled={deleteMutation.isPending}>
               {deleteMutation.isPending ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              Eliminar
+            </AlertDialogAction>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Card>
+  );
+}
+
+// ============ Pages Manager ============
+function PagesManager() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formData, setFormData] = useState({
+    slug: "",
+    title: "",
+    subtitle: "",
+    content: "",
+    imageUrl: "",
+    order: 0,
+    showInMenu: true,
+  });
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+
+  const pages = trpc.cms.dynamicPages.list.useQuery();
+  const createMutation = trpc.cms.dynamicPages.create.useMutation();
+  const updateMutation = trpc.cms.dynamicPages.update.useMutation();
+  const deleteMutation = trpc.cms.dynamicPages.delete.useMutation();
+
+  const handleSave = async () => {
+    try {
+      if (editingId) {
+        await updateMutation.mutateAsync({ id: editingId, data: formData });
+      } else {
+        await createMutation.mutateAsync(formData);
+      }
+      await pages.refetch();
+      setIsOpen(false);
+      setEditingId(null);
+      setFormData({ slug: "", title: "", subtitle: "", content: "", imageUrl: "", order: 0, showInMenu: true });
+    } catch (error) {
+      console.error("Error saving page:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (deleteId) {
+      try {
+        await deleteMutation.mutateAsync({ id: deleteId });
+        await pages.refetch();
+        setDeleteId(null);
+      } catch (error) {
+        console.error("Error deleting page:", error);
+      }
+    }
+  };
+
+  return (
+    <Card className="p-6 mt-6">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-bold">Páginas Dinámicas</h3>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm" onClick={() => { setEditingId(null); setFormData({ slug: "", title: "", subtitle: "", content: "", imageUrl: "", order: 0, showInMenu: true }); }}>
+              <Plus className="w-4 h-4 mr-2" /> Nueva Página
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{editingId ? "Editar" : "Crear"} Página</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Título</label>
+                <Input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} placeholder="Ej: Mi nueva página" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Slug (URL)</label>
+                <Input value={formData.slug} onChange={(e) => setFormData({ ...formData, slug: e.target.value })} placeholder="Ej: mi-nueva-pagina" />
+              </div>
+              <div className="col-span-2 space-y-2">
+                <label className="text-sm font-medium">Subtítulo (opcional)</label>
+                <Input value={formData.subtitle} onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })} placeholder="Breve descripción" />
+              </div>
+              <div className="col-span-2 space-y-2">
+                <label className="text-sm font-medium">URL de la Imagen</label>
+                <Input value={formData.imageUrl} onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} placeholder="https://..." />
+              </div>
+              <div className="col-span-2 space-y-2">
+                <label className="text-sm font-medium">Contenido (Texto)</label>
+                <Textarea value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} rows={10} placeholder="Contenido de la página..." />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Orden en menú</label>
+                <Input type="number" value={formData.order} onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })} />
+              </div>
+              <div className="flex items-center gap-2 pt-8">
+                <input type="checkbox" id="showInMenu" checked={formData.showInMenu} onChange={(e) => setFormData({ ...formData, showInMenu: e.target.checked })} />
+                <label htmlFor="showInMenu" className="text-sm font-medium">Mostrar en menú</label>
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setIsOpen(false)}>Cancelar</Button>
+              <Button onClick={handleSave} disabled={createMutation.isPending || updateMutation.isPending}>
+                {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                Guardar Página
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {pages.isLoading ? (
+        <div className="text-center py-8">Cargando páginas...</div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Título</TableHead>
+              <TableHead>URL</TableHead>
+              <TableHead>Menú</TableHead>
+              <TableHead>Orden</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {pages.data?.map((page) => (
+              <TableRow key={page.id}>
+                <TableCell className="font-medium">{page.title}</TableCell>
+                <TableCell className="text-xs text-muted-foreground">/p/{page.slug}</TableCell>
+                <TableCell>{page.showInMenu ? "Sí" : "No"}</TableCell>
+                <TableCell>{page.order}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="ghost" asChild>
+                      <a href={`/p/${page.slug}`} target="_blank" rel="noreferrer">
+                        <Eye className="w-4 h-4" />
+                      </a>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setEditingId(page.id);
+                        setFormData({
+                          slug: page.slug,
+                          title: page.title,
+                          subtitle: page.subtitle || "",
+                          content: page.content,
+                          imageUrl: page.imageUrl || "",
+                          order: page.order,
+                          showInMenu: page.showInMenu,
+                        });
+                        setIsOpen(true);
+                      }}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setDeleteId(page.id)}>
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+
+      <AlertDialog open={deleteId !== null} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar esta página?</AlertDialogTitle>
+            <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex gap-2 justify-end">
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={deleteMutation.isPending} className="bg-destructive text-destructive-foreground">
+              {deleteMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Eliminar
             </AlertDialogAction>
           </div>

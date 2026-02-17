@@ -15,6 +15,7 @@ import MitosPage from "./pages/MitosPage";
 import SobrePage from "./pages/SobrePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import LoginPage from "./pages/LoginPage";
+import DynamicPage from "./pages/DynamicPage";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
             <Route path="/mitos" component={MitosPage} />
             <Route path="/sobre-dockly" component={SobrePage} />
             <Route path="/admin" component={AdminDashboard} />
+            <Route path="/p/:slug" component={DynamicPage} />
             <Route path="/404" component={NotFound} />
             <Route component={NotFound} />
           </Switch>

@@ -12,6 +12,7 @@ import {
   legalDisclaimers,
   aboutPage,
   auditLog,
+  dynamicPages,
   type WorkArea,
   type BoardingStep,
   type Requirement,
@@ -20,6 +21,7 @@ import {
   type Myth,
   type LegalDisclaimer,
   type AboutPage,
+  type DynamicPage,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
@@ -326,4 +328,40 @@ export async function updateAboutPage(data: Partial<Omit<AboutPage, 'id' | 'crea
   } else {
     return db.insert(aboutPage).values(data as any);
   }
+}
+
+// ============ Dynamic Pages ============
+export async function getDynamicPages(onlyInMenu = false) {
+  const db = await getDb();
+  if (!db) return [];
+  const query = db.select().from(dynamicPages).where(eq(dynamicPages.isActive, true));
+  if (onlyInMenu) {
+    return query.where(eq(dynamicPages.showInMenu, true)).orderBy(dynamicPages.order);
+  }
+  return query.orderBy(dynamicPages.order);
+}
+
+export async function getDynamicPageBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(dynamicPages).where(eq(dynamicPages.slug, slug)).limit(1);
+  return result[0];
+}
+
+export async function createDynamicPage(data: Omit<DynamicPage, 'id' | 'createdAt' | 'updatedAt'>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.insert(dynamicPages).values(data);
+}
+
+export async function updateDynamicPage(id: number, data: Partial<Omit<DynamicPage, 'id' | 'createdAt'>>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(dynamicPages).set(data).where(eq(dynamicPages.id, id));
+}
+
+export async function deleteDynamicPage(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  return db.update(dynamicPages).set({ isActive: false }).where(eq(dynamicPages.id, id));
 }

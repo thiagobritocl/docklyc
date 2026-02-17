@@ -33,6 +33,11 @@ import {
   deleteLegalDisclaimer,
   getAboutPage,
   updateAboutPage,
+  getDynamicPages,
+  getDynamicPageBySlug,
+  createDynamicPage,
+  updateDynamicPage,
+  deleteDynamicPage,
 } from "../db";
 import { TRPCError } from "@trpc/server";
 import { seedDatabase } from "../seed";
@@ -112,8 +117,12 @@ export const cmsRouter = router({
     salaries: publicProcedure.query(() => getSalaryData()),
     fraudSignals: publicProcedure.input(z.object({ category: z.string().optional() }).optional()).query(({ input }) => getFraudSignals(input?.category)),
     myths: publicProcedure.query(() => getMyths()),
-    disclaimers: publicProcedure.query(() => getLegalDisclaimers()),
-    disclaimer: publicProcedure.input(z.object({ key: z.string() })).query(({ input }) => getLegalDisclaimerByKey(input.key)),
+  disclaimers: publicProcedure.query(() => getLegalDisclaimers()),
+  disclaimer: publicProcedure.input(z.object({ key: z.string() })).query(({ input }) => getLegalDisclaimerByKey(input.key)),
+  pages: router({
+    list: publicProcedure.query(() => getDynamicPages(true)),
+    get: publicProcedure.input(z.object({ slug: z.string() })).query(({ input }) => getDynamicPageBySlug(input.slug)),
+  }),
   }),
 
   // ============ Work Areas ============
@@ -295,6 +304,58 @@ export const cmsRouter = router({
       )
       .mutation(async ({ input }) => {
         return updateAboutPage(input);
+      }),
+  }),
+
+  // ============ Dynamic Pages ============
+  dynamicPages: router({
+    list: protectedProcedure.query(() => getDynamicPages()),
+    create: adminProcedure
+      .input(
+        z.object({
+          slug: z.string().min(1),
+          title: z.string().min(1),
+          subtitle: z.string().optional(),
+          content: z.string().min(1),
+          imageUrl: z.string().optional(),
+          order: z.number().optional(),
+          showInMenu: z.boolean().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        return createDynamicPage({
+          slug: input.slug,
+          title: input.title,
+          subtitle: input.subtitle ?? null,
+          content: input.content,
+          imageUrl: input.imageUrl ?? null,
+          order: input.order ?? 0,
+          showInMenu: input.showInMenu ?? true,
+          isActive: true,
+        });
+      }),
+    update: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          data: z.object({
+            slug: z.string().optional(),
+            title: z.string().optional(),
+            subtitle: z.string().optional(),
+            content: z.string().optional(),
+            imageUrl: z.string().optional(),
+            order: z.number().optional(),
+            showInMenu: z.boolean().optional(),
+          }),
+        })
+      )
+      .mutation(async ({ input }) => {
+        return updateDynamicPage(input.id, input.data);
+      }),
+    delete: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        return deleteDynamicPage(input.id);
       }),
   }),
 });
