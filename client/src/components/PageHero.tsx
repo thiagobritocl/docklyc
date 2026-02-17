@@ -19,7 +19,7 @@ export default function PageHero({ title, subtitle, imageUrl, badge }: PageHeroP
         <div className="absolute inset-0">
           <img
             src={imageUrl}
-            alt=""
+            alt={title}
             className="w-full h-full object-cover"
             loading="eager"
           />
