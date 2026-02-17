@@ -16,6 +16,7 @@ import SobrePage from "./pages/SobrePage";
 import AdminDashboard from "./pages/AdminDashboard";
 import LoginPage from "./pages/LoginPage";
 import DynamicPage from "./pages/DynamicPage";
+import RealityTestPage from "./pages/RealityTestPage";
 
 function Router() {
   return (
@@ -34,6 +35,7 @@ function Router() {
             <Route path="/sobre-dockly" component={SobrePage} />
             <Route path="/admin" component={AdminDashboard} />
             <Route path="/p/:slug" component={DynamicPage} />
+            <Route path="/teste-de-realidade" component={RealityTestPage} />
             <Route path="/404" component={NotFound} />
             <Route component={NotFound} />
           </Switch>
