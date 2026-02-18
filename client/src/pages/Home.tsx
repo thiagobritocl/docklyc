@@ -19,6 +19,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
+import SEO from "@/components/SEO";
 
 const HERO_IMG = "https://images.unsplash.com/photo-1548574505-5e239809ee19?w=1920&q=80";
 
@@ -98,6 +99,7 @@ export default function Home() {
 
   return (
     <div>
+      <SEO title="Home" url="/" />
       {/* Hero */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { FileCheck, Globe, Heart, BookOpen, Shield, AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
+import SEO from "@/components/SEO";
 import { trpc } from "@/lib/trpc";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -38,6 +39,11 @@ export default function RequisitosPage() {
 
   return (
     <div>
+      <SEO 
+        title="Requisitos" 
+        description="Documentos, certificaciones, idiomas y habilidades que generalmente se solicitan para trabajar en cruceros."
+        url="/requisitos"
+      />
       <PageHero
         title="Requisitos para trabajar en cruceros"
         subtitle="Documentos, certificaciones, idiomas y habilidades que generalmente se solicitan. Los requisitos pueden variar segun la naviera y el puesto."

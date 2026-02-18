@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { DollarSign, Info, TrendingUp } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import LegalDisclaimer from "@/components/LegalDisclaimer";
+import SEO from "@/components/SEO";
 import { trpc } from "@/lib/trpc";
 import { useMemo } from "react";
 
@@ -25,6 +26,12 @@ export default function SalariosPage() {
 
   return (
     <div>
+      <SEO 
+        title="Salarios" 
+        description="Estimaciones promedio de salarios mensuales por cargo en la industria de cruceros. Rangos referenciales en USD."
+        url="/salarios"
+        image={HERO_IMG}
+      />
       <PageHero
         title="Salarios en cruceros"
         subtitle="Estimaciones promedio de salarios mensuales por cargo. Los montos son referenciales y pueden variar significativamente segun la naviera, el barco, la ruta y la temporada."

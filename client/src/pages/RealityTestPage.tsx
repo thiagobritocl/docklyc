@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import SEO from "@/components/SEO";
 import {
   Card,
   CardContent,
@@ -137,6 +138,11 @@ export default function RealityTestPage() {
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-8">
+      <SEO 
+        title="Teste de Realidad" 
+        description="Descubre si realmente estás listo para la vida y el trabajo a bordo de un crucero con nuestro Test de Realidad."
+        url="/teste-de-realidade"
+      />
       <h1 className="text-4xl font-bold text-center mb-4">
         Test de Realidad
       </h1>
